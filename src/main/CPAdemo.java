@@ -9,26 +9,36 @@ import javax.imageio.ImageIO;
 
 import chaos.Chaosdemo;
 
-public class Test {
+public class CPAdemo {
 	
 	public static void main(String[] args)
 	{
-		String s = "dummy.bmp";		
-		File file = new File(s);
-//		String scheme = "Chaos-LOGISTIC:3.87 0.4";
-		String map = "LOGISTIC";
-		String key = "3.87 0.4";
+		// specify the file you want to decrypt
+		String decrypt = "test-enc.bmp";
+		
+		// specify the dummy file. needs to be the same size as the file you want to decrypt,
+		// should be in BMP format, and needs to be encrypted 
+		String dummy = "dummy4x4.bmp";
+		File file = new File(dummy);
+		
+		String scheme = Main.scheme;
+		
+		int index = scheme.lastIndexOf(':');
+		String key = scheme.substring(index+1);
+		String map = scheme.substring(0,index).split("-")[1];
 		
 		long start = System.nanoTime();
 		
+		CryptoUtils.docrypto(dummy, scheme, Cipher.ENCRYPT_MODE);
 		
 		BufferedImage image = null;
 		BufferedImage image_enc = null;
 		BufferedImage ciphertext = null;
 		try {
 			image = ImageIO.read(file);
-			image_enc = ImageIO.read(new File("dummy-enc.bmp"));
-			ciphertext = ImageIO.read(new File("DECRYPTED.bmp"));
+			String enc = dummy.split("\\.")[0] + "-enc." + dummy.split("\\.")[1];
+			image_enc = ImageIO.read(new File(enc));
+			ciphertext = ImageIO.read(new File(decrypt));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
